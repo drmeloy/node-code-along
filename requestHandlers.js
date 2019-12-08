@@ -1,6 +1,8 @@
-const exec = require('child_process').exec;
+const querystring = require('querystring');
+const fs = require('fs');
+const formidable = require('formidable');
 
-const start = (response, postData) => {
+const start = (response) => {
   console.log('Request handler "start" was called.');
 
   const body = /*html*/ `
@@ -9,9 +11,9 @@ const start = (response, postData) => {
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   </head>
   <body>
-  <form action="/upload" method="post">
-  <textarea name="text" rows="20" cols="60"></textarea>
-  <input type="submit" value="Submit text" />
+  <form action="/upload" enctype="multipart/form-data" method="post">
+  <input type="file" name="upload" multiple="multiple">
+  <input type="submit" value="Upload file" />
   </form>
   </body>
   </html>
@@ -22,11 +24,29 @@ const start = (response, postData) => {
   response.end();
 }
 
-const upload = (response, postData) => {
+const upload = (response, request) => {
   console.log('Request handler "upload" was called.');
-  response.writeHead(200, {"Content-Type": "text/plain"});
-  response.write("You've sent: " + postData);
+  const form = new formidable.IncomingForm();
+  console.log('About to parse');
+  form.parse(request, (error, fields, files) => {
+    console.log('parsing done');
+    fs.rename(files.upload.path, '/assets/test.JPG', function(error){
+      if (error) {
+        fs.unlink('./assets/test.JPG');
+        fs.rename(files.upload.path, './assets/test.JPG');
+      }
+    });
+  });
+  response.writeHead(200, {"Content-Type": "text/html"});
+  response.write("Received image:<br/>")
+  response.write("<img src='/show' />");
   response.end();
 }
 
-module.exports = { start, upload };
+const show = response => {
+  console.log('Requeset handler "show" was called.');
+  response.writeHead(200, {"Content-Type": "image/png"});
+  fs.createReadStream("./assets/test.JPG").pipe(response);
+}
+
+module.exports = { start, upload, show };

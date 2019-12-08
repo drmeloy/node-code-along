@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/drmeloy/node-code-along#readme",
   "dependencies": {
+    "formidable": "^1.2.1",
     "querystring": "^0.2.0",
     "url": "^0.11.0"
   }
