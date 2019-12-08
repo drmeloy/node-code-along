@@ -1,9 +1,10 @@
 const route = (handle, pathname) => {
   console.log('About to route a request for ' + pathname);
   if(typeof handle[pathname] === 'function'){
-    handle[pathname]();
+    return handle[pathname]();
   }
   console.log('No request handler found for ' + pathname);
+  return "404 Not found";
 }
 
 module.exports = { route };
