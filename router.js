@@ -4,7 +4,7 @@ const route = (handle, pathname) => {
     return handle[pathname]();
   }
   console.log('No request handler found for ' + pathname);
-  return "404 Not found";
+  return "404: " + pathname + " Not found";
 }
 
 module.exports = { route };
