@@ -30,13 +30,15 @@ const upload = (response, request) => {
   console.log('About to parse');
   form.parse(request, (error, fields, files) => {
     console.log('parsing done');
-    fs.rename(files.upload.path, '/assets/test.JPG', function(error){
-      if (error) {
-        fs.unlink('./assets/test.JPG');
-        fs.rename(files.upload.path, './assets/test.JPG');
-      }
+    fs.unlink('./assets/test.JPG', error => {
+      console.log(error);
     });
-  });
+    console.log('Unlink done');
+    fs.rename(files.upload.path, 'C:\\Users\\Dan\\Documents\\alchemy\\career-track\\labs\\node-code-along\\assets\\test.JPG', error => {
+      console.log(error);
+    });
+    console.log('Rename done');
+    });
   response.writeHead(200, {"Content-Type": "text/html"});
   response.write("Received image:<br/>")
   response.write("<img src='/show' />");
@@ -45,7 +47,7 @@ const upload = (response, request) => {
 
 const show = response => {
   console.log('Requeset handler "show" was called.');
-  response.writeHead(200, {"Content-Type": "image/png"});
+  response.writeHead(200, {"Content-Type": "image/JPG"});
   fs.createReadStream("./assets/test.JPG").pipe(response);
 }
 
