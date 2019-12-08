@@ -1,19 +1,20 @@
-const start = () => {
+const exec = require('child_process').exec;
+
+const start = (response) => {
   console.log('Request handler "start" was called.');
 
-  const sleep = milliseconds => {
-    const startTime = new Date().getTime();
-    while (new Date().getTime() < startTime + milliseconds);
-  }
-
-  sleep(10000);
-  return 'Hello Start';
+  exec('ls -lah', (error, stdout, stderr) => {
+    response.writeHead(200, {"Content-Type": "text/plain"});
+    response.write(stdout);
+    response.end();
+  });
 }
 
-const upload = () => {
+const upload = (response) => {
   console.log('Request handler "upload" was called.');
-
-  return "Hello Upload";
+  response.writeHead(200, {"Content-Type": "text/plain"});
+  response.write("Hello Upload");
+  response.end();
 }
 
 module.exports = { start, upload };
